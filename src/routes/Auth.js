@@ -1,8 +1,10 @@
+import { authService } from "fbase";
 import React, { useState } from "react";
 
 const Auth =() => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [newAccount, setNewAccount] = useState(true);
     const onChange = (event)=>{
         const {target:{name, value}} = event;
         if(name==="email"){
@@ -12,15 +14,30 @@ const Auth =() => {
         }
         
     }
-    const onSubmit =(event)=>{
-        event.preventDefault();
+    const onSubmit = async(event)=>{
+        event.preventDefault(); //기본행위(submit)가 실행되는걸 원하지 않을 때 사용 let me handle 
+
+        try{
+            let data;
+            if(newAccount){
+                //create account
+                data = await authService.createUserWithEmailAndPassword(email, password);
+            }else{
+                //log in
+                data = await authService.signInWithEmailAndPassword(email, password);
+                 
+            }
+            console.log(data);
+        }catch(error){
+            console.log(error);
+        }
     }
     return(
     <div>
         <form onSubmit={onSubmit}>
-            <input name = "email" type="text" placeholder = "Email" required value ={email} onChange={onChange}/>
+            <input name = "email" type="email" placeholder = "Email" required value ={email} onChange={onChange}/>
             <input name = "password" type="password" placeholder = "password" required value ={password} onChange={onChange}/>
-            <input type="submit" value="Log In"/>
+            <input type="submit" value={newAccount ? "Create Account":"Log In"}/>
         </form>
         <div>
             <button>Continue with Google</button>
