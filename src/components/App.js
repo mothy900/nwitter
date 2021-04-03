@@ -1,18 +1,25 @@
-import React,{ useState } from "react";
+import React,{ useEffect, useState } from "react";
 import AppRouter from "components/Router";
 import {authService} from "fbase";
 
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser);
-  console.log(authService.currentUser);
-  setInterval(()=>{
-    console.log(authService.currentUser);
+  const [init, setInit] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(()=>{
+    authService.onAuthStateChanged((user)=>{  // user의 상태를 계속 지켜보고 있는 Event Listener
+      if(user){
+        setIsLoggedIn(true);
+      }else{
+        setIsLoggedIn(false);
+      }
+      setInit(true);
 
-  }, 2000);
+    });
+  }, [])
   return ( 
     <>
-      <AppRouter isLoggedIn={isLoggedIn} />
+      { init ? <AppRouter isLoggedIn={isLoggedIn} /> : "Initializing ..."}
       <footer>&copy; {new Date().getFullYear()} Nwitter</footer>
     </>
   );  
