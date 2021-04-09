@@ -8,11 +8,12 @@ const Home = ({ userObj }) => {
 
   useEffect(() => {
     dbService.collection("nweets").onSnapshot((snapshot) => {
+      //snapshot은 db를 바라보면서 변화가 감지되면 실행
       const nweetArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
+        id: doc.id, // 배열 생긴 모습
         ...doc.data(),
       }));
-      setNweets(nweetArray);
+      setNweets(nweetArray); // array 에 배열을 넣는다
     });
   }, []);
   const onSubmit = async (event) => {
