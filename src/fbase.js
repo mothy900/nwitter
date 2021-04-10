@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 
 // 여기 있는 모든 FireBase 관련 문서를 전부다 불러올 것이 아닌, export 를 통해 필요한 함수만 가져다 쓴다.
 const firebaseConfig = {
@@ -20,3 +21,5 @@ export const authService = firebase.auth();
 
 export const dbService = firebase.firestore();
 // firebase DB 사용
+
+export const storageService = firebase.storage();
