@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 export default ({ refreshUser, userObj }) => {
   const history = useHistory();
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
+  const [profilePic, serProfilePic] = useState("");
   const onLogOutClick = () => {
     authService.signOut();
     history.push("/");
@@ -32,6 +33,21 @@ export default ({ refreshUser, userObj }) => {
   useEffect(() => {
     getMyNweets();
   });
+
+  const onFileChange = (event) => {
+    const {
+      target: { files },
+    } = event;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+    };
+    reader.readAsDataURL(theFile);
+  };
+  const onSubmitPic = (event) => {};
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -43,6 +59,8 @@ export default ({ refreshUser, userObj }) => {
         />
         <input type="submit" value="Update Profile" />
       </form>
+      <input type="file" accept="image/*" onChange={onFileChange} />
+      <input type="submit" value="Setting Profile" onSubmit={onSubmitPic} />
       <button onClick={onLogOutClick}>Log out</button>
     </>
   );
