@@ -47,7 +47,12 @@ export default ({ refreshUser, userObj }) => {
     };
     reader.readAsDataURL(theFile);
   };
-  const onSubmitPic = (event) => {};
+  const onSubmitPic = async (event) => {
+    event.preventDefault();
+    let profilePic = "";
+    //사진업로드기능 Home에서 사진 URL 받아오는 방식으로 진행할 계획
+    //버켓에 profile doc 생성하기
+  };
   return (
     <>
       <form onSubmit={onSubmit}>
