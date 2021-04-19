@@ -1,14 +1,16 @@
-import { authService, dbService } from "fbase";
+import { authService, dbService, storageService } from "fbase";
 import { useHistory } from "react-router-dom";
+
 import React, { useState, useEffect } from "react";
 
 export default ({ refreshUser, userObj }) => {
   const history = useHistory();
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
-  const [profilePic, serProfilePic] = useState("");
+
   const onLogOutClick = () => {
     authService.signOut();
     history.push("/");
+    refreshUser();
   };
   const getMyNweets = async () => {
     const nweets = await dbService
@@ -34,25 +36,6 @@ export default ({ refreshUser, userObj }) => {
     getMyNweets();
   });
 
-  const onFileChange = (event) => {
-    const {
-      target: { files },
-    } = event;
-    const theFile = files[0];
-    const reader = new FileReader();
-    reader.onloadend = (finishedEvent) => {
-      const {
-        currentTarget: { result },
-      } = finishedEvent;
-    };
-    reader.readAsDataURL(theFile);
-  };
-  const onSubmitPic = async (event) => {
-    event.preventDefault();
-    let profilePic = "";
-    //사진업로드기능 Home에서 사진 URL 받아오는 방식으로 진행할 계획
-    //버켓에 profile doc 생성하기
-  };
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -64,8 +47,7 @@ export default ({ refreshUser, userObj }) => {
         />
         <input type="submit" value="Update Profile" />
       </form>
-      <input type="file" accept="image/*" onChange={onFileChange} />
-      <input type="submit" value="Setting Profile" onSubmit={onSubmitPic} />
+
       <button onClick={onLogOutClick}>Log out</button>
     </>
   );
