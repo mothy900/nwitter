@@ -7,21 +7,23 @@ const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
 
   useEffect(() => {
-    dbService.collection("nweets").onSnapshot((snapshot) => {
+    const getData = dbService.collection("nweets").onSnapshot((snapshot) => {
       //snapshot은 db를 바라보면서 변화가 감지되면 실행
       const nweetArray = snapshot.docs.map((doc) => ({
         id: doc.id, // 배열 생긴 모습
         ...doc.data(),
       }));
+
       setNweets(nweetArray); // array 에 배열을 넣는다
+      return () => getData();
     });
   }, []);
 
   return (
-    <div>
+    <div className="container">
       <NweetFactory userObj={userObj} />
       {console.log(userObj.uid)}
-      <div>
+      <div style={{ marginTop: 30 }}>
         {nweets.map((nweet) => (
           <Nweet
             key={nweet.id}
