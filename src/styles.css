@@ -147,6 +147,10 @@ form {
   width: 80px;
   border-radius: 40px;
 }
+.factoryForm__profilePic img {
+  height: 80px;
+  width: 80px;
+}
 
 .factoryForm__clear {
   color: #04aaff;

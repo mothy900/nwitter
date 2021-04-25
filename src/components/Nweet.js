@@ -1,5 +1,5 @@
 import { dbService, storageService } from "fbase";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
@@ -28,6 +28,14 @@ const Nweet = ({ nweetObj, isOwner }) => {
     } = event;
     setNewNweet(value);
   };
+  const orderByNweets = async () => {
+    //내가만듬
+    await dbService.collection("nweets").orderBy("createdAt").get();
+  };
+  useEffect(() => {
+    orderByNweets();
+    //변화가 감지될 때 마다 실행
+  });
   return (
     <div className="nweet">
       {editing ? (

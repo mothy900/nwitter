@@ -27,7 +27,7 @@ const NweetFactory = ({ userObj }) => {
       attachmentUrl,
     };
     try {
-      await dbService.collection("nweets").add(nweetObj);
+      await dbService.collection("nweets").add(nweetObj); //db collection 없으면 생성
       setNweet("");
       setAttachment("");
     } catch (error) {
