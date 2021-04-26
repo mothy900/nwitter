@@ -19,6 +19,9 @@ const NweetFactory = ({ userObj }) => {
         .child(`${userObj.uid}/${uuidv4()}`);
       const respons = await attachmentREf.putString(attachment, "data_url");
       attachmentUrl = await respons.ref.getDownloadURL();
+
+      console.log(respons);
+      console.log(attachmentUrl);
     }
     const nweetObj = {
       text: nweet,

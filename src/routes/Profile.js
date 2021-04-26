@@ -27,6 +27,7 @@ export default ({ refreshUser, userObj }) => {
     setNewDisplayName(value);
   };
   const onSubmit = async (event) => {
+    console.log("onsubmit");
     event.preventDefault();
     let profilePicUrl = "";
     if (userObj.displayName !== newDisplayName) {
@@ -34,12 +35,31 @@ export default ({ refreshUser, userObj }) => {
     }
     refreshUser();
 
+    console.log("profilePic : ", profilePic);
     if (profilePic !== "") {
+      //사진 storage로 업로드, 경로는 profile/userUid 로 업로드! 덮어쓰기 가능
       const profilePicREf = storageService
         .ref()
         .child(`profilePic/${userObj.uid}`);
       const respons = await profilePicREf.putString(profilePic, "data_url");
       profilePicUrl = await respons.ref.getDownloadURL();
+      console.log(profilePicREf);
+      console.log(profilePicUrl);
+    }
+    const profileObj = {
+      createdAt: Date.now(),
+      creatorId: userObj.uid,
+      profilePicUrl,
+    };
+    // 저장한 뒤엔 원래 있던 사진을 삭제해야함.
+
+    try {
+      const res = await dbService.collection("profilePic"); // 기존에 있던 프로필 사진 삭제
+      console.log(res);
+      await dbService.collection("profilePic").add(profileObj); //db collection 없으면 생성
+      setProfilePic("");
+    } catch (error) {
+      console.log(error);
     }
   };
   useEffect(() => {
@@ -66,7 +86,7 @@ export default ({ refreshUser, userObj }) => {
     <div className="container">
       <form onSubmit={onSubmit} className="profileForm">
         <div className="profile_Img">
-          <img src></img>
+          <img src={"22"}></img>
         </div>
         <input
           onChange={onChange}
@@ -83,7 +103,8 @@ export default ({ refreshUser, userObj }) => {
           style={{
             marginTop: 10,
           }}
-          onClick={onClearAttachment}
+          //onClick={onClearAttachment}
+          // submit 하면 프로파일의 사진 미리보기 삭제
         />
         <label htmlFor="profile-pic" className="profilePic_input">
           <span>Add photos</span>
@@ -102,7 +123,7 @@ export default ({ refreshUser, userObj }) => {
         {profilePic && (
           <div className="factoryForm__profilePic">
             <img
-              src={profilePic}
+              src={`${profilePic}`}
               style={{
                 backgroundImage: profilePic,
               }}
