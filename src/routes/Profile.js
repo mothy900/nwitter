@@ -27,7 +27,6 @@ export default ({ refreshUser, userObj }) => {
     setNewDisplayName(value);
   };
   const onSubmit = async (event) => {
-    console.log("onsubmit");
     event.preventDefault();
     let profilePicUrl = "";
     if (userObj.displayName !== newDisplayName) {
@@ -35,7 +34,6 @@ export default ({ refreshUser, userObj }) => {
     }
     refreshUser();
 
-    console.log("profilePic : ", profilePic);
     if (profilePic !== "") {
       //사진 storage로 업로드, 경로는 profile/userUid 로 업로드! 덮어쓰기 가능
       const profilePicREf = storageService
@@ -43,8 +41,6 @@ export default ({ refreshUser, userObj }) => {
         .child(`profilePic/${userObj.uid}`);
       const respons = await profilePicREf.putString(profilePic, "data_url");
       profilePicUrl = await respons.ref.getDownloadURL();
-      console.log(profilePicREf);
-      console.log(profilePicUrl);
     }
     const profileObj = {
       createdAt: Date.now(),
@@ -54,14 +50,48 @@ export default ({ refreshUser, userObj }) => {
     // 저장한 뒤엔 원래 있던 사진을 삭제해야함.
 
     try {
-      const res = await dbService.collection("profilePic"); // 기존에 있던 프로필 사진 삭제
-      console.log(res);
+      await dbService.collection("profilePic").doc(`*`).delete(); // 기존에 있던 프로필 사진 삭제
+      //console.log();
       await dbService.collection("profilePic").add(profileObj); //db collection 없으면 생성
       setProfilePic("");
     } catch (error) {
       console.log(error);
     }
   };
+  ////////////////////////////////////////////////////
+  /*async function deleteCollection(db, collectionPath, batchSize) {
+    const collectionRef = db.collection(collectionPath);
+    const query = collectionRef.orderBy('__name__').limit(batchSize);
+  
+    return new Promise((resolve, reject) => {
+      deleteQueryBatch(db, query, resolve).catch(reject);
+    });
+  }
+  
+  async function deleteQueryBatch(db, query, resolve) {
+    const snapshot = await query.get();
+  
+    const batchSize = snapshot.size;
+    if (batchSize === 0) {
+      // When there are no documents left, we are done
+      resolve();
+      return;
+    }
+  
+    // Delete documents in a batch
+    const batch = db.batch();
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+  
+    // Recurse on the next process tick, to avoid
+    // exploding the stack.
+    process.nextTick(() => {
+      deleteQueryBatch(db, query, resolve);
+    });
+  }*/
+  ////////////////////////////////////////////////////
   useEffect(() => {
     //변화가 감지될 때 마다 실행
     getMyNweets();
